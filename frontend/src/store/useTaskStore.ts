@@ -6,7 +6,8 @@ interface TaskStore {
   tasks: TaskResponse[];
   isLoading: boolean;
   error: string | null;
-
+  
+  // Ações
   fetchTasks: () => Promise<void>;
   addTask: (task: TaskCreateUpdate) => Promise<void>;
   removeTask: (id: number) => Promise<void>;
@@ -14,10 +15,12 @@ interface TaskStore {
 }
 
 export const useTaskStore = create<TaskStore>((set) => ({
-
+  // --- Estado Inicial ---
   tasks: [],
   isLoading: false,
   error: null,
+
+  // --- AÇÕES ---
 
   fetchTasks: async () => {
     set({ isLoading: true, error: null });
@@ -34,7 +37,6 @@ export const useTaskStore = create<TaskStore>((set) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await api.createTask(task);
-    
       set((state) => ({
         tasks: [...state.tasks, response.data],
         isLoading: false
@@ -49,7 +51,6 @@ export const useTaskStore = create<TaskStore>((set) => ({
     set({ error: null });
     try {
       await api.deleteTask(id);
-    
       set((state) => ({
         tasks: state.tasks.filter(task => task.id !== id)
       }));
@@ -62,11 +63,9 @@ export const useTaskStore = create<TaskStore>((set) => ({
   toggleTaskStatus: async (id, currentStatus) => {
     set({ error: null });
     try {
-    
       const newStatus = !currentStatus;
       const response = await api.toggleTask(id, { completed: newStatus });
       
-    
       set((state) => ({
         tasks: state.tasks.map(task => 
           task.id === id ? response.data : task
@@ -77,5 +76,4 @@ export const useTaskStore = create<TaskStore>((set) => ({
       console.error(err);
     }
   }
-
 }));

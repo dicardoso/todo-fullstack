@@ -7,9 +7,30 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: todolist_db
     ports:
-      - "5433:5432"
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  backend:
+    build:
+      context: ./backend
+    container_name: todo-list-backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres-db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/todolist_db
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: password
+
+  frontend:
+    build:
+      context: ./frontend 
+    container_name: todo-list-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
 volumes:
   postgres_data:

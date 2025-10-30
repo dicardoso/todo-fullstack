@@ -1,6 +1,12 @@
 import React from 'react';
 import { useTaskStore } from '../store/useTaskStore';
-import type { TaskResponse } from '../types';
+import type { TaskResponse, Priority } from '../types';
+
+const priorityColors: Record<Priority, string> = {
+  LOW: 'bg-green-100 text-green-700',
+  MEDIUM: 'bg-yellow-100 text-yellow-700',
+  HIGH: 'bg-red-100 text-red-700',
+};
 
 interface TaskItemProps {
   task: TaskResponse;
@@ -14,49 +20,36 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
   };
 
   const handleDelete = () => {
-    if (window.confirm(`Tem certeza que deseja deletar a tarefa: "${task.title}"?`)) {
+    if (window.confirm(`Tem certeza que deseja deletar: "${task.title}"?`)) {
       removeTask(task.id);
     }
   };
 
-  const priorityColor = {
-    LOW: 'text-green-600 bg-green-100',
-    MEDIUM: 'text-yellow-600 bg-yellow-100',
-    HIGH: 'text-red-600 bg-red-100',
-  };
-
   return (
-    <li className="flex items-center justify-between p-4 mb-2 bg-white rounded-lg shadow-sm border border-gray-200">
-      <div className="flex-1">
-        <div className="flex items-center">
-          {/* Checkbox */}
-          <input
-            type="checkbox"
-            checked={task.completed}
-            onChange={handleToggle}
-            className="form-checkbox h-5 w-5 text-blue-600 rounded border-gray-300"
-          />
-          
-          {/* Título */}
-          <span className={`ml-3 text-lg font-medium ${
-              task.completed ? 'line-through text-gray-400' : 'text-gray-800'
-            }`}
-          >
-            {task.title}
-          </span>
+    <li className="flex items-center p-4 bg-white rounded-lg shadow-sm mb-3
+                   transition-all hover:shadow-md"
+    >
+      {/* Checkbox */}
+      <input
+        type="checkbox"
+        checked={task.completed}
+        onChange={handleToggle}
+        className="form-checkbox h-5 w-5 text-blue-600 rounded-md border-gray-300
+                   focus:ring-blue-500 cursor-pointer"
+      />
 
-          {/* Badge de Prioridade */}
-          <span 
-            className={`ml-3 px-2 py-0.5 rounded-full text-xs font-semibold ${priorityColor[task.priority]}`}
-          >
-            {task.priority}
-          </span>
-        </div>
-
-        {/* Descrição */}
+      {/* Conteúdo Principal (Título e Descrição) */}
+      <div className="flex-1 min-w-0 ml-4">
+        <span 
+          className={`text-lg font-medium text-gray-900 truncate ${
+            task.completed ? 'line-through text-gray-400' : ''
+          }`}
+        >
+          {task.title}
+        </span>
         {task.description && (
-          <p className={`ml-8 mt-1 text-sm ${
-              task.completed ? 'text-gray-400' : 'text-gray-600'
+          <p className={`text-sm text-gray-500 truncate ${
+              task.completed ? 'line-through' : ''
             }`}
           >
             {task.description}
@@ -64,11 +57,21 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
         )}
       </div>
 
+      {/* Prioridade (Badge) */}
+      <div className="ml-4 hidden sm:block"> {/* Oculta em telas pequenas */}
+        <span 
+          className={`px-3 py-1 rounded-full text-xs font-semibold
+                      ${priorityColors[task.priority]}`}
+        >
+          {task.priority}
+        </span>
+      </div>
+
       {/* Botão Deletar */}
       <button
         onClick={handleDelete}
-        className="px-3 py-1 text-sm font-medium text-red-600 bg-red-100 rounded-md 
-                   hover:bg-red-200 hover:text-red-800"
+        className="ml-4 px-3 py-1 text-sm font-medium text-red-500 
+                   rounded-md hover:bg-red-100 transition-colors"
       >
         Deletar
       </button>

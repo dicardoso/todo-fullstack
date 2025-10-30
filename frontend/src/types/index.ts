@@ -6,7 +6,7 @@ export interface TaskResponse {
   description?: string;
   completed: boolean;
   priority: Priority;
-  createdAt: string; 
+  createdAt: string;
   updatedAt: string;
 }
 

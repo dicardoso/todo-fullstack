@@ -1,4 +1,3 @@
-// src/App.tsx
 import { useEffect } from 'react';
 import { useTaskStore } from './store/useTaskStore';
 import { TaskForm } from './components/TaskForm';
@@ -12,32 +11,46 @@ function App() {
   }, [fetchTasks]);
 
   return (
-    <div className="max-w-3xl mx-auto mt-10 p-4 font-sans antialiased">
-      <h1 className="text-4xl font-bold text-center text-gray-800 mb-6">
-        Minha Lista de Tarefas (React + Spring)
-      </h1>
+    <div className="min-h-screen bg-gray-100 py-10 antialiased ">
+      
+      {/* Container Principal */}
+      <div className="max-w-3xl mx-auto px-4 space-y-8">
+        
+        {/* Cabeçalho */}
+        <header>
+          <h1 className="text-4xl font-bold text-center text-gray-800">
+            Minhas Tarefas
+          </h1>
+        </header>
 
-      <TaskForm />
+        <div>
+        {/* Formulário de Criação */}
+        <main>
+          <TaskForm />
+        </main>
 
-      <hr className="my-6" />
+        {/* Seção da Lista de Tarefas */}
+        <section>
+          {/* Feedback de Loading e Erro */}
+          {isLoading && <p className="text-center text-blue-600">Carregando...</p>}
+          {error && <p className="text-center text-red-600 font-semibold">{error}</p>}
 
-      <h2 className="text-2xl font-semibold text-gray-700 mb-4">
-        Tarefas Pendentes
-      </h2>
+          {/* Lista de Tarefas */}
+          <ul className="list-none p-0">
+            {tasks.map(task => (
+              <TaskItem key={task.id} task={task} />
+            ))}
+          </ul>
 
-      {isLoading && <p className="text-blue-500">Carregando tarefas...</p>}
-      {error && <p className="text-red-600 font-semibold">{error}</p>}
-
-      {/* Lista de tarefas */}
-      <ul className="list-none p-0">
-        {tasks.map(task => (
-          <TaskItem key={task.id} task={task} />
-        ))}
-      </ul>
-
-      {!isLoading && tasks.length === 0 && (
-        <p className="text-gray-500">Nenhuma tarefa encontrada. Adicione uma!</p>
-      )}
+          {/* Estado Vazio */}
+          {!isLoading && !error && tasks.length === 0 && (
+            <div className="text-center p-6 bg-white rounded-lg shadow-sm">
+              <p className="text-gray-500">Nenhuma tarefa encontrada. Adicione uma!</p>
+            </div>
+          )}
+        </section>
+          </div>
+      </div>
     </div>
   );
 }
