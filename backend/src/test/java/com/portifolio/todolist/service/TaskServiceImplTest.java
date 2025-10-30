@@ -59,9 +59,7 @@ public class TaskServiceImplTest {
 
         when(taskRepository.findById(idNonexistent)).thenReturn(Optional.empty());
 
-        assertThrows(TaskNotFoundException.class, () -> {
-            taskService.getTaskById(idNonexistent);
-        });
+        assertThrows(TaskNotFoundException.class, () -> taskService.getTaskById(idNonexistent));
 
         verify(taskRepository, times(1)).findById(idNonexistent);
     }

@@ -64,7 +64,7 @@ class TaskControllerTest {
 
     @Test
     void getTaskById_whenNotFound_shouldReturn404() throws Exception {
-        Long idInexistente = 999L;
+        long idInexistente = 999L;
         
         mockMvc.perform(get("/api/v1/tasks/" + idInexistente))
                 .andExpect(status().isNotFound()) 
