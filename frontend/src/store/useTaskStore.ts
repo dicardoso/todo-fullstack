@@ -2,25 +2,28 @@ import { create } from 'zustand';
 import * as api from '../api/apiService';
 import type { TaskResponse, TaskCreateUpdate } from '../types';
 
-interface TaskStore {
+interface TaskState {
   tasks: TaskResponse[];
   isLoading: boolean;
   error: string | null;
-  
-  // Ações
+}
+
+interface TaskActions {
   fetchTasks: () => Promise<void>;
   addTask: (task: TaskCreateUpdate) => Promise<void>;
   removeTask: (id: number) => Promise<void>;
   toggleTaskStatus: (id: number, currentStatus: boolean) => Promise<void>;
+  reset: () => void;
 }
 
-export const useTaskStore = create<TaskStore>((set) => ({
-  // --- Estado Inicial ---
+const initialState: TaskState = {
   tasks: [],
   isLoading: false,
   error: null,
+};
 
-  // --- AÇÕES ---
+export const useTaskStore = create<TaskState & TaskActions>((set) => ({
+  ...initialState,
 
   fetchTasks: async () => {
     set({ isLoading: true, error: null });
@@ -39,7 +42,7 @@ export const useTaskStore = create<TaskStore>((set) => ({
       const response = await api.createTask(task);
       set((state) => ({
         tasks: [...state.tasks, response.data],
-        isLoading: false
+        isLoading: false,
       }));
     } catch (err) {
       set({ error: 'Falha ao criar tarefa.', isLoading: false });
@@ -52,7 +55,7 @@ export const useTaskStore = create<TaskStore>((set) => ({
     try {
       await api.deleteTask(id);
       set((state) => ({
-        tasks: state.tasks.filter(task => task.id !== id)
+        tasks: state.tasks.filter(task => task.id !== id),
       }));
     } catch (err) {
       set({ error: 'Falha ao deletar tarefa.' });
@@ -69,11 +72,15 @@ export const useTaskStore = create<TaskStore>((set) => ({
       set((state) => ({
         tasks: state.tasks.map(task => 
           task.id === id ? response.data : task
-        )
+        ),
       }));
     } catch (err) {
       set({ error: 'Falha ao atualizar status.' });
       console.error(err);
     }
-  }
+  },
+
+  reset: () => {
+    set(initialState);
+  },
 }));
