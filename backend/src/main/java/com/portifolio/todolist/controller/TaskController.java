@@ -19,9 +19,9 @@ public class TaskController {
     private TaskService taskService;
 
     @PostMapping
-    public TaskResponseDTO createTask(@RequestBody TaskCreateUpdateDTO taskDTO) {
+    public ResponseEntity<TaskResponseDTO> createTask(@Valid @RequestBody TaskCreateUpdateDTO taskDTO) {
         TaskResponseDTO createTask = taskService.createTask(taskDTO);
-        return new ResponseEntity<>(createTask, HttpStatus.CREATED).getBody();
+        return new ResponseEntity<>(createTask, HttpStatus.CREATED);
     }
 
     @GetMapping
