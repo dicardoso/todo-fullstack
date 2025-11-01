@@ -23,8 +23,8 @@ describe('useTaskStore', () => {
         data: mockTasks,
         status: 0,
         statusText: '',
-        headers: undefined,
-        config: undefined
+        headers: {} as never,
+        config: {} as never
     });
 
     const state = useTaskStore.getState();
@@ -40,7 +40,13 @@ describe('useTaskStore', () => {
   });
 
   test('removeTask deve remover a tarefa do estado', async () => {
-    vi.mocked(api.deleteTask).mockResolvedValue({});
+    vi.mocked(api.deleteTask).mockResolvedValue({
+      data: undefined,
+      status: 0,
+      statusText: '',
+      headers: {} as never,
+      config: {} as never
+    });
     
     useTaskStore.setState({ tasks: mockTasks, isLoading: false, error: null });
     expect(useTaskStore.getState().tasks).toHaveLength(2);

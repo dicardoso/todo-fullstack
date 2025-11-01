@@ -1,73 +1,86 @@
-# React + TypeScript + Vite
+# 🚀 Frontend: To-Do List (React, Vite & Tailwind)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Esta pasta contém a aplicação frontend para o projeto To-Do List. É uma Single Page Application (SPA) moderna, construída com foco em performance, gerenciamento de estado desacoplado e uma excelente experiência de desenvolvedor (DX).
 
-Currently, two official plugins are available:
+A aplicação é totalmente testada, containerizada para produção e estilizada com Tailwind CSS.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## 🛠️ Stack de Tecnologias
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+* **Framework:** [React 18+](https://react.dev/) (com Hooks)
+* **Build Tool:** [Vite](https://vitejs.dev/) (para build e desenvolvimento ultra-rápido)
+* **Linguagem:** [TypeScript](https://www.typescriptlang.org/)
+* **Gerenciador de Pacotes:** [Yarn](https://yarnpkg.com/)
+* **Estilização:** [Tailwind CSS](https://tailwindcss.com/) (com o plugin `@tailwindcss/forms` para estilos de formulário modernos)
+* **Gerenciamento de Estado:** [Zustand](https://zustand-demo.pmnd.rs/) (para gerenciamento de estado global leve e centralizado)
+* **Requisições API:** [Axios](https://axios-http.com/) (centralizado em um serviço de API)
+* **Testes:**
+    * [Vitest](https://vitest.dev/): Test runner moderno e rápido.
+    * [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/): Para testes de componentes focados no usuário.
+    * [JSDOM](https://github.com/jsdom/jsdom): Para simular o ambiente do navegador.
+* **Linting:** [ESLint](https://eslint.org/) (configurado para React e TypeScript)
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🏗️ Arquitetura
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+O frontend é projetado com uma separação clara de responsabilidades:
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+* **`/components`**: Componentes React "burros" e reutilizáveis (ex: `TaskItem`, `TaskForm`). Eles recebem dados via `props` e emitem eventos.
+* **`/store`**: O "cérebro" da aplicação. O hook `useTaskStore.ts` (Zustand) é a única parte do app autorizada a falar com a API. Ele gerencia o estado global (`tasks`, `isLoading`, `error`).
+* **`/api`**: Onde reside o `apiService.ts`. Ele centraliza todas as instâncias do `axios` e as chamadas de API.
+* **`/types`**: Contém o arquivo `index.ts` que define as "formas" dos dados (interfaces TypeScript) compartilhadas entre a API e os componentes (ex: `TaskResponse`).
+* **Arquivos de Teste (`.test.tsx`)**: Os testes são "colocados" (colocated) ao lado dos arquivos que eles testam (ex: `TaskItem.tsx` e `TaskItem.test.tsx` vivem na mesma pasta). Esta é uma prática moderna que melhora a visibilidade e a manutenção.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+---
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 💻 Rodando Localmente (Modo de Desenvolvimento)
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Para rodar o frontend em modo de desenvolvimento (com hot-reload), você precisará do **backend rodando** em `http://localhost:8080`.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+1.  **Navegue até a pasta:**
+    ```bash
+    cd frontend
+    ```
+2.  **Instale as dependências (apenas na primeira vez):**
+    ```bash
+    yarn install
+    ```
+3.  **Execute o servidor de desenvolvimento:**
+    ```bash
+    yarn dev
+    ```
+4.  Abra seu navegador em `http://localhost:5173` (ou a porta indicada pelo Vite).
+
+---
+
+## 🧪 Testes
+
+O projeto possui testes unitários para o store e componentes, garantindo a lógica de negócio e a renderização correta.
+
+* **Para rodar todos os testes uma vez (no terminal):**
+    ```bash
+    yarn test
+    ```
+* **Para rodar em modo "watch" (ótimo para desenvolver):**
+    ```bash
+    yarn test --watch
+    ```
+* **Para rodar com a UI Gráfica do Vitest (Recomendado):**
+    ```bash
+    yarn test --ui
+    ```
+
+---
+
+## 🚢 Build de Produção (Docker)
+
+Este projeto é totalmente containerizado para produção.
+
+* **`Dockerfile`**: Usa um build multi-stage.
+    1.  **Estágio 1 (`build`):** Usa uma imagem `node` para instalar dependências (`yarn install`) e compilar o app (`yarn build`).
+    2.  **Estágio 2 (`serve`):** Copia os arquivos estáticos compilados para um servidor `nginx:alpine` super leve.
+* **`nginx.conf`**: Configura o Nginx para duas coisas:
+    1.  Servir a SPA React (lidando com o roteamento `try_files`).
+    2.  Atuar como um **Reverse Proxy** para o backend. Requisições para `/api` são automaticamente encaminhadas para o serviço `backend:8080`, eliminando a necessidade de CORS.
